@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Conhecimentos Gerais</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+    }
+    .question {
+      margin: 1rem 0;
+    }
+    .options label {
+      display: block;
+      margin: 0.5rem 0;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .feedback {
+      margin: 1rem 0;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz de Conhecimentos Gerais</h1>
+    <div id="quiz">
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <button id="submit">Enviar</button>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        pergunta: "Qual é a capital do Brasil?",
+        opcoes: ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador"],
+        correta: 2
+      },
+      {
+        pergunta: "Qual o maior planeta do sistema solar?",
+        opcoes: ["Terra", "Júpiter", "Saturno", "Marte"],
+        correta: 1
+      },
+      {
+        pergunta: "Quem pintou a Mona Lisa?",
+        opcoes: ["Leonardo da Vinci", "Van Gogh", "Picasso", "Michelangelo"],
+        correta: 0
+      },
+      {
+        pergunta: "Quantos estados tem o Brasil?",
+        opcoes: ["24", "25", "26", "27"],
+        correta: 2
+      }
+    ];
+
+    let indiceAtual = 0;
+    let pontuacao = 0;
+
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const feedbackEl = document.getElementById('feedback');
+    const submitBtn = document.getElementById('submit');
+
+    function carregarPergunta() {
+      feedbackEl.textContent = "";
+      const atual = quizData[indiceAtual];
+      questionEl.textContent = atual.pergunta;
+      optionsEl.innerHTML = "";
+
+      atual.opcoes.forEach((opcao, index) => {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'resposta';
+        input.value = index;
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(opcao));
+        optionsEl.appendChild(label);
+      });
+    }
+
+    submitBtn.addEventListener('click', () => {
+      const selecionada = document.querySelector('input[name="resposta"]:checked');
+      if (!selecionada) {
+        alert("Por favor, selecione uma resposta.");
+        return;
+      }
+      const resposta = parseInt(selecionada.value);
+      const correta = quizData[indiceAtual].correta;
+
+      if (resposta === correta) {
+        feedbackEl.textContent = "Correto!";
+        feedbackEl.style.color = 'green';
+        pontuacao++;
+      } else {
+        feedbackEl.textContent = `Errado! A resposta correta é: ${quizData[indiceAtual].opcoes[correta]}`;
+        feedbackEl.style.color = 'red';
+      }
+
+      indiceAtual++;
+
+      if (indiceAtual < quizData.length) {
+        setTimeout(carregarPergunta, 1500);
+      } else {
+        setTimeout(() => {
+          questionEl.textContent = "Fim do Quiz!";
+          optionsEl.innerHTML = "";
+          feedbackEl.innerHTML = `Você acertou ${pontuacao} de ${quizData.length} perguntas.`;
+          submitBtn.style.display = 'none';
+        }, 1500);
+      }
+    });
+
+    carregarPergunta();
+  </script>
+</body>
+</html>
